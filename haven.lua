@@ -63,7 +63,7 @@ function init()
     type="control",
     id="rev_level",
     controlspec=controlspec.new(-math.huge, 18, "db", 0, 0, "dB"),
-    action=function(value) mix:set("rev_level", value) end,
+    action=function(value) mix:set("rev_eng_input", value) end,
   }
 
   params:bang()

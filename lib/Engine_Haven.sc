@@ -1,5 +1,5 @@
 /*
-2019, Till Bovermann
+2019, 2020, Till Bovermann
 http://tai-studio.org
 http://lfsaw.de
 */
@@ -13,12 +13,13 @@ Engine_Haven : CroneGenEngine {
 			\amp2: [-90, 0, \linear, 0.0, 0, ""].asSpec,
 			\inAmp: [-90, 0, \linear, 0.0, 0, ""].asSpec,
 			\fdbck: [0, 1, \linear, 0.0, 0.03, ""].asSpec,
-			\fdbckSign: [-1, 1, \linear, 1, 0, ""].asSpec
+			\fdbckSign: [-1, 1, \linear, 1, 0, ""].asSpec,
+			\globalAmp: [-90, 0, \linear, 0.0, 0, ""].asSpec
 		)
 	}
 
 	*synthDef { // TODO: move ugenGraphFunc to here...
-		^SynthDef(\haven, {|in = 0, out = 0, freq1 = 20, freq2 = 4000, amp1 = -90, amp2 = -90, inAmp = -90, fdbck = 0.3, fdbckSign = 1|
+		^SynthDef(\haven, {|in = 0, out = 0, freq1 = 20, freq2 = 4000, amp1 = -90, amp2 = -90, inAmp = -90, globalAmp = 0, fdbck = 0.3, fdbckSign = 1|
 			var freqs, freqRanges;
 			var inputs, oscAmps;
 			var dyns, dynIns;
@@ -30,11 +31,12 @@ Engine_Haven : CroneGenEngine {
 			oscAmps = [amp1, amp2];
 			oscAmps = oscAmps.varlag(0.3);
 			inAmp = inAmp.varlag(0.3);
+			globalAmp = globalAmp.varlag(0.3);
 
-			oscAmps = max(0, oscAmps.dbamp - (-90.dbamp)); // ensure mute when at -90 db;
-			inAmp   = max(0,  inAmp .dbamp - (-90.dbamp)); // ensure mute when at -90 db;
-
-
+			// ensure mute when at -90 db;
+			oscAmps = max(0, oscAmps.dbamp - (-90.dbamp));
+			inAmp   = max(0,  inAmp .dbamp - (-90.dbamp));
+			globalAmp = max(0,  globalAmp .dbamp - (-90.dbamp));
 
 
 			// combine fdbck with its sign
@@ -122,7 +124,7 @@ Engine_Haven : CroneGenEngine {
 
 			snd = (snd * 0.8) - (0.5 * MoogLadder.ar(rotate.(snd, dyns.sum.lag(0.01)), ffreq: (1-dyns.lag(0, 10)) * 1100 + 50, res: 0.2));
 			snd = snd.tanh;
-
+			snd = snd * globalAmp;
 			Out.ar(out, snd);
 		},
 		metadata: (specs: this.specs)

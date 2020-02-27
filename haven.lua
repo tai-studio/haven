@@ -20,7 +20,6 @@ engine.name = "Haven"
 
 local sel = 1
 local shift = false
-local fdbckSign = 1
 
 -- knobs and encoders
 local k1 = 1
@@ -163,7 +162,7 @@ function redraw()
   screen.move(12, 40)
   screen.text("fdbck:")
     screen.move_rel(20, 0)
-  if fdbckSign == -1 then
+  if params:get("fdbckSign") == -1 then
     screen.text("(-)")
   else
     screen.text("(+)")
@@ -242,9 +241,9 @@ function enc(n, delta)
     end
     if n == e2 then
       if delta >= 0 then
-        fdbckSign = 1
+        params:set("fdbckSign", 1)
       else
-        fdbckSign = -1
+        params:set("fdbckSign", -1)
       end
     end
   elseif sel == ctlIn then

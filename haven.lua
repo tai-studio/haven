@@ -67,6 +67,11 @@ function init()
   }
 
   params:bang()
+
+  local screen_timer = metro.init()
+  screen_timer.time = 1 / 15
+  screen_timer.event = function() redraw() end
+  screen_timer:start()
 end
 
 function redraw()
@@ -122,7 +127,6 @@ function key(n, z)
 	  end
     -- wrap cycle around
     sel = ((sel-1) % 5) + 1
-    redraw()
   end
   
   if n == 3 then
@@ -131,7 +135,6 @@ function key(n, z)
 		  -- toggle feedbackSign
   	  fdbckSign = fdbckSign * -1
 	    engine.fdbckSign(fdbckSign)
-      redraw()
 	  end
   end
 end
@@ -180,6 +183,4 @@ function enc(n, delta)
       params:delta("rev_level", delta)
     end
   end
-
-  redraw()
 end

@@ -99,7 +99,7 @@ function init()
     type="control",
     id="rev_level",
     controlspec=controlspec.new(-math.huge, 18, "db", 0, 0, "dB"),
-    action=function(value) mix:set("rev_eng_input", value) end,
+    action=function(value) params:set("rev_eng_input", value) end,
   }
 
   params:add{
@@ -211,7 +211,6 @@ function enc(n, delta)
   local delta = delta
 
   if n == e1 then
-    -- mix:delta("output", delta)
     if shift then delta = delta / 10 end
     params:delta("global_amp", delta)
   end
